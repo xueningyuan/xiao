@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="(v,k) in messages">
+                有人说：{{v}}
+            </li>
+        </ul>
+        <select v-model="to">
+            <option value="">发给所有用户</option>
+            <option :value="k" v-for="(v,k) in userList">{{v}}</option>
+        </select>
+        <hr>
+        <textarea v-model="content"></textarea>
+        <input @click="submit" type="button" value="发送">
+        <input @click="logout" type="button" value="退出">
+    </div>
+</body>
+</html>
+<script src="vue.js"></script>
+<script>
+
+new Vue({
+    el:'#app',
+    data: {
+        ws: null,  // 保存 WebSocket 对象
+        content:'',
+        userList: [],
+        to:'',
+        messages: []  // 保存所有接收的消息
+    },
+    // 当 vue 创建时调用
+    created: function(){
+        var token = localStorage.getItem('jwt_token')
+        if(token == undefined)
+            location.href = "login.html"
+        else
+        {
+            this.ws = new WebSocket('ws://127.0.0.1:9999?token='+token)
+            this.ws.onopen = this.open
+            this.ws.onmessage = this.message
+            this.ws.onerror = this.error
+        }
+        
+    },
+    methods:{
+        error:function(){
+            location.href="login.html"
+        },
+        submit:function(){
+            // 把框里的内容发送到服务器、
+            if(this.to ==''){
+                this.ws.send( 'all:'+this.content )
+            }
+            else{
+                this.ws.send(this.to+':'+this.content)
+            }
+            
+            // 清空框
+            this.content = ''
+        },
+        open: function() {
+            alert('连接成功！')
+        },
+        logout:function(){
+            this.ws.close()
+            localStorage.removeItem('jwt_token')
+            location.href = "login.html"
+        },
+        message: function(e) {
+
+            // 消息1、所有用户的列表信息
+
+            // 消息2、用户说的话
+
+            // 解析JSON
+            let data = JSON.parse(e.data)
+        //    console.log(data.type);
+            // 根据消息的类型发处理消息
+
+            if(data.type == 'users')
+                this.userList = data.users
+            else
+                this.messages.push(data.message)
+            
+        }
+    }
+})
+
+</script>

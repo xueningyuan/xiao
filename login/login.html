@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        用户名：<input type="text" v-model="username"> <br>
+        密码：<input type="password" v-model="password"> <br>
+        <input @click="login" type="button" value="登录">
+    </div>
+</body>
+</html>
+<script src="vue.js"></script>
+<script src="axios.min.js"></script>
+<script>
+
+new Vue({
+    el:'#app',
+    data: {
+        username:'',
+        password:''
+    },
+    methods:{
+        login:function(){
+            axios.post('http://localhost:9999/login.php', {
+                username: this.username,
+                password: this.password
+            })
+            .then(function(response){
+                if(response.data.code == 200){
+                    // 登录成功，保存服务器返回的令牌
+                    localStorage.setItem('jwt_token', response.data.jwt)
+                    // 进入聊天室
+                    location.href = "index.html"
+                }
+                else{
+                    alert(response.data.error)
+                }
+            })
+
+        }
+    }
+})
+
+</script>

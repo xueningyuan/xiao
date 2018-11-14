@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>房间列表</title>
+    <style>
+    li{
+        padding: 5px;
+        list-style-type: none;
+        border: 1px solid #ccc;
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h3>房间列表</h3>
+        <ul>
+            <li v-for="(v,k) in rooms">
+                <p><a :href="'room.html?id='+v.id">{{v.title}}</a></p>
+                <p>主播：{{v.username}}</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
+<script src="./vue.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            rooms:[
+                {
+                    id:1,
+                    title:'世界杯',
+                    username:'大灰狼'
+                },
+                {
+                    id:2,
+                    title:'php',
+                    username:'灰狼'
+                }
+            ]
+        }
+    })
+
+</script>

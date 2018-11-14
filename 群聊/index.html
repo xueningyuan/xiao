@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="(v,k) in messages">
+                有人说：{{v}}
+            </li>
+        </ul>
+        <textarea v-model="content"></textarea>
+        <input type="button" @click="submit" value="发送">
+    </div>
+</body>
+</html>
+<script src="./vue.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            ws:null,
+            content:"",
+            messages:[]
+        },
+        created:function(){
+            this.ws = new WebSocket('ws://127.0.0.1:9999');
+            this.ws.onopen = this.open
+            this.ws.onmessage = this.message
+        },
+        methods:{
+            submit:function(){
+                this.ws.send(this.content);
+                this.content ='';
+            },
+            open:function(){
+                alert("连接");
+            },
+            message:function(e){
+                 this.messages.push(e.data)
+            }
+        }
+    })
+
+</script>
