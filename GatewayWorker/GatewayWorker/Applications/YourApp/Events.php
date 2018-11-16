@@ -39,7 +39,7 @@ class Events
         // 向当前client_id发送数据 
         Gateway::sendToClient($client_id, "Hello $client_id\r\n");
         // 向所有人发送
-        Gateway::sendToAll("$client_id login\r\n");
+        Gateway::sendToAll("$client_id 进入聊天室\r\n");
     }
     
    /**
@@ -60,6 +60,6 @@ class Events
    public static function onClose($client_id)
    {
        // 向所有人发送 
-       GateWay::sendToAll("$client_id logout\r\n");
+       GateWay::sendToAll("$client_id 离开聊天室\r\n");
    }
 }
